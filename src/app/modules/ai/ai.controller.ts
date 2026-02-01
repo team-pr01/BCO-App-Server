@@ -16,8 +16,20 @@ const aiChat = catchAsync(async (req, res) => {
   });
 });
 
+const translateNews = catchAsync(async (req, res) => {
+  const translations = await AiServices.translateNews(req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "News translated and saved successfully",
+    data: translations,
+  });
+});
+
 
 
 export const AiControllers = {
   aiChat,
+  translateNews,
 };
