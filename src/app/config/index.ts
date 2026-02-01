@@ -16,4 +16,5 @@ export default {
   reset_password_ui_url: process.env.RESET_PASSWORD_UI_URL,
   smtp_email: process.env.SMTP_EMAIL,
   smtp_pass: process.env.SMTP_PASS,
+  chat_gpt_api : process.env.CHAT_GPT_API,
 };
