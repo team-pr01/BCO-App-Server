@@ -15,10 +15,6 @@ const ReelsSchema = new Schema<TReels>(
       type: String,
       required: true,
     },
-    videoSource: {
-      type: String,
-      required: true,
-    },
     category: {
       type: String,
       required: true,
@@ -29,11 +25,6 @@ const ReelsSchema = new Schema<TReels>(
     },
     likes: { type: Number, default: 0, required: false },
     likedBy: [{ type: Types.ObjectId, ref: "User" }],
-    createdBy: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
   },
   {
     timestamps: true,

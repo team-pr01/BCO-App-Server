@@ -14,10 +14,6 @@ const ReelsSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
-    videoSource: {
-        type: String,
-        required: true,
-    },
     category: {
         type: String,
         required: true,
@@ -28,11 +24,6 @@ const ReelsSchema = new mongoose_1.Schema({
     },
     likes: { type: Number, default: 0, required: false },
     likedBy: [{ type: mongoose_1.Types.ObjectId, ref: "User" }],
-    createdBy: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    },
 }, {
     timestamps: true,
 });

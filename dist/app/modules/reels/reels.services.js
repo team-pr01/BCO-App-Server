@@ -19,12 +19,11 @@ const AppError_1 = __importDefault(require("../../errors/AppError"));
 const reels_model_1 = __importDefault(require("./reels.model"));
 // Add reel for admin only
 const addReel = (payload, createdBy) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, description, videoUrl, videoSource, category, tags } = payload;
+    const { title, description, videoUrl, category, tags } = payload;
     const payloadData = {
         title,
         description,
         videoUrl,
-        videoSource,
         category,
         tags,
         createdBy,
