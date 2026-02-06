@@ -16,10 +16,10 @@ exports.User = void 0;
 const mongoose_1 = require("mongoose");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = __importDefault(require("../../config"));
+const auth_constannts_1 = require("./auth.constannts");
 const userSchema = new mongoose_1.Schema({
     avatar: {
         type: String,
-        required: false,
     },
     name: {
         type: String,
@@ -31,25 +31,15 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         required: true,
         unique: true,
-        trim: true,
         lowercase: true,
+        trim: true,
     },
     phoneNumber: {
         type: String,
         required: true,
         trim: true,
     },
-    area: {
-        type: String,
-        required: false,
-        trim: true,
-    },
-    city: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    state: {
+    location: {
         type: String,
         required: true,
         trim: true,
@@ -66,24 +56,19 @@ const userSchema = new mongoose_1.Schema({
     },
     role: {
         type: String,
-        enum: ["user", "admin", "moderator", "super-admin", "temple"],
-        default: "user",
-    },
-    assignedPages: {
-        type: [String],
-        default: [],
-    },
-    totalQuizTaken: {
-        type: Number,
-        required: false,
-        default: 0,
-    },
-    isVerified: {
-        type: Boolean,
-        default: false,
+        enum: Object.values(auth_constannts_1.UserRole),
+        default: auth_constannts_1.UserRole.user,
     },
     expoPushToken: {
         type: String,
+        required: true,
+    },
+    resetPasswordToken: {
+        type: String,
+        default: null,
+    },
+    resetPasswordExpires: {
+        type: Date,
         default: null,
     },
     isDeleted: {
@@ -94,59 +79,30 @@ const userSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
-    resetPasswordToken: {
-        type: String,
-        default: null,
-    },
-    resetPasswordExpires: {
-        type: Date,
-        default: null,
-    },
-    lastLoggedIn: {
-        type: Date,
-        default: null,
-        required: false,
-    },
-    plan: { type: String, default: "free" },
-    subscriptionStart: Date,
-    subscriptionEnd: Date,
-    // Usage tracking for subscription
-    usage: {
-        aiChatDaily: { type: Number, default: 0 },
-        aiRecipesMonthly: { type: Number, default: 0 },
-        vastuAiMonthly: { type: Number, default: 0 },
-        kundliMonthly: { type: Number, default: 0 },
-        muhurtaMonthly: { type: Number, default: 0 },
-        lastDailyReset: Date,
-        lastMonthlyReset: Date,
-    },
 }, {
     timestamps: true,
 });
-// Hash password before saving
+/* ===========================
+   Hooks
+=========================== */
 userSchema.pre("save", function (next) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (this.isModified("password")) {
-            this.password = yield bcrypt_1.default.hash(this.password, Number(config_1.default.bcrypt_salt_round));
-        }
+        if (!this.isModified("password"))
+            return next();
+        this.password = yield bcrypt_1.default.hash(this.password, Number(config_1.default.bcrypt_salt_round));
         next();
     });
 });
-// Hide password after saving
-userSchema.post("save", function (doc, next) {
-    doc.password = "";
-    next();
-});
-// Static methods
+/* ===========================
+   Statics
+=========================== */
 userSchema.statics.isUserExists = function (email) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield this.findOne({ email }).select("+password");
-    });
+    return this.findOne({ email }).select("+password");
 };
 userSchema.statics.isPasswordMatched = function (plainTextPassword, hashedPassword) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield bcrypt_1.default.compare(plainTextPassword, hashedPassword);
-    });
+    return bcrypt_1.default.compare(plainTextPassword, hashedPassword);
 };
-// Export the model
+/* ===========================
+   Model
+=========================== */
 exports.User = (0, mongoose_1.model)("User", userSchema);

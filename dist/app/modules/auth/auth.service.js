@@ -40,41 +40,6 @@ const saveUserPushToken = (payload) => __awaiter(void 0, void 0, void 0, functio
     });
     return result;
 });
-// const sendPushNotificationToUser = async (payload: {
-//   userId: string;
-//   title: string;
-//   message: string;
-// }) => {
-//   const { userId, title, message } = payload;
-//   const user = await User.findById(userId);
-//   if (!user || !user.expoPushToken) {
-//     throw new AppError(httpStatus.NOT_FOUND, "User or push token not found");
-//   }
-//   if (!Expo.isExpoPushToken(user.expoPushToken)) {
-//     throw new AppError(httpStatus.BAD_REQUEST, "Invalid Expo push token");
-//   }
-//   const messages = [
-//     {
-//       to: user.expoPushToken,
-//       sound: 'default',
-//       title,
-//       body: message,
-//       data: { userId },
-//     },
-//   ];
-//   const tickets: Expo.PushTicket[] = [];
-//   const chunks = expo.chunkPushNotifications(messages);
-//   for (const chunk of chunks) {
-//     try {
-//       const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-//       tickets.push(...ticketChunk);
-//     } catch (error) {
-//       console.error('Error sending push notification:', error);
-//       throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to send push notification");
-//     }
-//   }
-//   return tickets;
-// };
 // Create user
 const signup = (payload, file) => __awaiter(void 0, void 0, void 0, function* () {
     // Checking if user already exists
@@ -121,7 +86,6 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         email: user.email || "",
         phoneNumber: user.phoneNumber,
         role: user.role,
-        assignedPages: user.assignedPages || [],
         avatar: user.avatar || [],
     };
     const accessToken = (0, auth_utils_1.createToekn)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);
@@ -135,10 +99,7 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
             email: user.email,
             phoneNumber: user.phoneNumber,
             role: user.role,
-            assignedPages: user.assignedPages || [],
             avatar: user.avatar || "",
-            totalQuizTaken: user.totalQuizTaken || 0,
-            lastLoggedIn: user.lastLoggedIn,
         },
     };
 });
@@ -163,7 +124,6 @@ const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
         email: user.email || "",
         phoneNumber: user.phoneNumber,
         role: user.role,
-        assignedPages: user.assignedPages || [],
         avatar: user.avatar || [],
     };
     const accessToken = (0, auth_utils_1.createToekn)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);
@@ -194,7 +154,7 @@ const forgetPassword = (email) => __awaiter(void 0, void 0, void 0, function* ()
       <li>Submit the form to complete the reset.</li>
     </ol>
     <p>If you didn’t request this, you can ignore this email.</p>
-    <p>Thanks,<br/>AKF Team</p>
+    <p>Thanks,<br/>Team BCO</p>
   `;
     yield (0, sendEmail_1.sendEmail)(user === null || user === void 0 ? void 0 : user.email, htmlBody);
     return {};

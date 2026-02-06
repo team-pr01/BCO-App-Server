@@ -2,113 +2,82 @@ import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import config from "../../config";
 import { TUser, UserModel } from "./auth.interface";
+import { UserRole } from "./auth.constannts";
 
 const userSchema = new Schema<TUser, UserModel>(
   {
     avatar: {
       type: String,
-      required: false,
     },
+
     name: {
       type: String,
       required: true,
       trim: true,
       maxlength: 100,
     },
+
     email: {
       type: String,
       required: true,
       unique: true,
-      trim: true,
       lowercase: true,
+      trim: true,
     },
+
     phoneNumber: {
       type: String,
       required: true,
       trim: true,
     },
-    area: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    city: {
+
+    location: {
       type: String,
       required: true,
       trim: true,
     },
-    state: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+
     country: {
       type: String,
       required: true,
       trim: true,
     },
+
     password: {
       type: String,
       required: true,
       select: false,
     },
+
     role: {
       type: String,
-      enum: ["user", "admin", "moderator", "super-admin", "temple"],
-      default: "user",
+      enum: Object.values(UserRole),
+      default: UserRole.user,
     },
-    assignedPages: {
-      type: [String],
-      default: [],
-    },
-    totalQuizTaken: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
+
     expoPushToken: {
       type: String,
-      default: null,
+      required: true,
     },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
-    isSuspended: {
-      type: Boolean,
-      default: false,
-    },
+
     resetPasswordToken: {
       type: String,
       default: null,
     },
+
     resetPasswordExpires: {
       type: Date,
       default: null,
     },
-    lastLoggedIn: {
-      type: Date,
-      default: null,
-      required: false,
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
-    plan: { type: String, default: "free" },
-    subscriptionStart: Date,
-    subscriptionEnd: Date,
 
-    // Usage tracking for subscription
-    usage: {
-      aiChatDaily: { type: Number, default: 0 },
-      aiRecipesMonthly: { type: Number, default: 0 },
-      vastuAiMonthly: { type: Number, default: 0 },
-      kundliMonthly: { type: Number, default: 0 },
-      muhurtaMonthly: { type: Number, default: 0 },
-
-      lastDailyReset: Date,
-      lastMonthlyReset: Date,
+    isSuspended: {
+      type: Boolean,
+      default: false,
     },
   },
   {
@@ -116,34 +85,38 @@ const userSchema = new Schema<TUser, UserModel>(
   }
 );
 
-// Hash password before saving
+/* ===========================
+   Hooks
+=========================== */
+
 userSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    this.password = await bcrypt.hash(
-      this.password,
-      Number(config.bcrypt_salt_round)
-    );
-  }
+  if (!this.isModified("password")) return next();
+
+  this.password = await bcrypt.hash(
+    this.password,
+    Number(config.bcrypt_salt_round)
+  );
+
   next();
 });
 
-// Hide password after saving
-userSchema.post("save", function (doc, next) {
-  doc.password = "";
-  next();
-});
+/* ===========================
+   Statics
+=========================== */
 
-// Static methods
-userSchema.statics.isUserExists = async function (email: string) {
-  return await this.findOne({ email }).select("+password");
+userSchema.statics.isUserExists = function (email: string) {
+  return this.findOne({ email }).select("+password");
 };
 
-userSchema.statics.isPasswordMatched = async function (
+userSchema.statics.isPasswordMatched = function (
   plainTextPassword: string,
   hashedPassword: string
 ) {
-  return await bcrypt.compare(plainTextPassword, hashedPassword);
+  return bcrypt.compare(plainTextPassword, hashedPassword);
 };
 
-// Export the model
+/* ===========================
+   Model
+=========================== */
+
 export const User = model<TUser, UserModel>("User", userSchema);

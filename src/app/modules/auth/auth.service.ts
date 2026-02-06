@@ -29,58 +29,16 @@ const saveUserPushToken = async (payload: any) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
 
   return result;
 };
 
-// const sendPushNotificationToUser = async (payload: {
-//   userId: string;
-//   title: string;
-//   message: string;
-// }) => {
-//   const { userId, title, message } = payload;
-
-//   const user = await User.findById(userId);
-//   if (!user || !user.expoPushToken) {
-//     throw new AppError(httpStatus.NOT_FOUND, "User or push token not found");
-//   }
-
-//   if (!Expo.isExpoPushToken(user.expoPushToken)) {
-//     throw new AppError(httpStatus.BAD_REQUEST, "Invalid Expo push token");
-//   }
-
-//   const messages = [
-//     {
-//       to: user.expoPushToken,
-//       sound: 'default',
-//       title,
-//       body: message,
-//       data: { userId },
-//     },
-//   ];
-
-//   const tickets: Expo.PushTicket[] = [];
-//   const chunks = expo.chunkPushNotifications(messages);
-
-//   for (const chunk of chunks) {
-//     try {
-//       const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-//       tickets.push(...ticketChunk);
-//     } catch (error) {
-//       console.error('Error sending push notification:', error);
-//       throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to send push notification");
-//     }
-//   }
-
-//   return tickets;
-// };
-
 // Create user
 const signup = async (
   payload: Partial<TUser>,
-  file: Express.Multer.File | undefined
+  file: Express.Multer.File | undefined,
 ) => {
   // Checking if user already exists
   const isUserExists = await User.findOne({ email: payload.email });
@@ -139,7 +97,7 @@ const loginUser = async (payload: TLoginAuth) => {
   await User.findByIdAndUpdate(
     user?._id,
     { lastLoggedIn: new Date() },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   );
 
   // Create token
@@ -149,20 +107,19 @@ const loginUser = async (payload: TLoginAuth) => {
     email: user.email || "",
     phoneNumber: user.phoneNumber,
     role: user.role,
-    assignedPages: user.assignedPages || [],
     avatar: user.avatar || [],
   };
 
   const accessToken = createToekn(
     jwtPayload,
     config.jwt_access_secret as string,
-    config.jwt_access_expires_in as string
+    config.jwt_access_expires_in as string,
   );
 
   const refreshToken = createToekn(
     jwtPayload,
     config.jwt_refresh_secret as string,
-    config.jwt_refresh_expires_in as string
+    config.jwt_refresh_expires_in as string,
   );
 
   return {
@@ -174,10 +131,7 @@ const loginUser = async (payload: TLoginAuth) => {
       email: user.email,
       phoneNumber: user.phoneNumber,
       role: user.role,
-      assignedPages: user.assignedPages || [],
       avatar: user.avatar || "",
-      totalQuizTaken: user.totalQuizTaken || 0,
-      lastLoggedIn: user.lastLoggedIn,
     },
   };
 };
@@ -187,14 +141,14 @@ const refreshToken = async (token: string) => {
   if (!token) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
-      "You are not authorized to proceed!"
+      "You are not authorized to proceed!",
     );
   }
 
   // Check if the token is valid or not.
   const decoded = jwt.verify(
     token,
-    config.jwt_refresh_secret as string
+    config.jwt_refresh_secret as string,
   ) as JwtPayload;
 
   const { email } = decoded;
@@ -216,13 +170,12 @@ const refreshToken = async (token: string) => {
     email: user.email || "",
     phoneNumber: user.phoneNumber,
     role: user.role,
-    assignedPages: user.assignedPages || [],
     avatar: user.avatar || [],
   };
   const accessToken = createToekn(
     jwtPayload,
     config.jwt_access_secret as string,
-    config.jwt_access_expires_in as string
+    config.jwt_access_expires_in as string,
   );
 
   return {
@@ -244,7 +197,7 @@ const forgetPassword = async (email: string) => {
     {
       resetPasswordToken: otp,
       resetPasswordExpires: new Date(Date.now() + 10 * 60 * 1000), // 10 min
-    }
+    },
   );
 
   const htmlBody = `
@@ -260,7 +213,7 @@ const forgetPassword = async (email: string) => {
       <li>Submit the form to complete the reset.</li>
     </ol>
     <p>If you didn’t request this, you can ignore this email.</p>
-    <p>Thanks,<br/>AKF Team</p>
+    <p>Thanks,<br/>Team BCO</p>
   `;
 
   await sendEmail(user?.email, htmlBody);
@@ -289,7 +242,7 @@ const resetPassword = async (payload: {
 
   const hashedPassword = await bcrypt.hash(
     newPassword,
-    Number(config.bcrypt_salt_round)
+    Number(config.bcrypt_salt_round),
   );
 
   // Use updateOne to update password and clear OTP fields
@@ -304,7 +257,7 @@ const resetPassword = async (payload: {
         resetPasswordToken: null,
         resetPasswordExpires: null,
       },
-    }
+    },
   );
 
   return {};
@@ -323,7 +276,7 @@ const changeUserRole = async (payload: { userId: string; role: any }) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
 
   return result;
@@ -341,7 +294,7 @@ const assignPagesToUser = async (payload: {
   const result = await User.findByIdAndUpdate(
     payload.userId,
     { assignedPages: payload.pages },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   );
 
   return result;
