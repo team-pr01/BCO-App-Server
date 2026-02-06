@@ -8,6 +8,7 @@ import { ConsultancyServiceRoutes } from "../modules/consultancyService/consulta
 import { ReelsRoutes } from "../modules/reels/reels.route";
 import { ContactUsRoutes } from "../modules/contactUs/contactUs.route";
 import { ConsultationRoutes } from "../modules/consultations/consultations.route";
+import { AiRoutes } from "../modules/ai/ai.route";
 
 const router = Router();
 
@@ -47,6 +48,10 @@ const moduleRoutes = [
   {
     path: "/contact-us",
     route: ContactUsRoutes,
+  },
+  {
+    path: "/ai",
+    route: AiRoutes,
   },
 ];
 

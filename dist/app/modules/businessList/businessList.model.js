@@ -37,6 +37,11 @@ const BusinessListSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    createdBy: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
 }, {
     timestamps: true,
 });

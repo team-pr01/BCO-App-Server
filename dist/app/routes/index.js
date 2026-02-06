@@ -10,6 +10,7 @@ const consultancyService_route_1 = require("../modules/consultancyService/consul
 const reels_route_1 = require("../modules/reels/reels.route");
 const contactUs_route_1 = require("../modules/contactUs/contactUs.route");
 const consultations_route_1 = require("../modules/consultations/consultations.route");
+const ai_route_1 = require("../modules/ai/ai.route");
 const router = (0, express_1.Router)();
 const moduleRoutes = [
     {
@@ -47,6 +48,10 @@ const moduleRoutes = [
     {
         path: "/contact-us",
         route: contactUs_route_1.ContactUsRoutes,
+    },
+    {
+        path: "/ai",
+        route: ai_route_1.AiRoutes,
     },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

@@ -42,6 +42,7 @@ const addBusiness = (payload, file) => __awaiter(void 0, void 0, void 0, functio
         website,
         location,
         imageUrl,
+        createdBy,
     };
     const result = yield businessList_model_1.default.create(businessData);
     return result;

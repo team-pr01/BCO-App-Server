@@ -46,6 +46,7 @@ const addBusiness = async (
     website,
     location,
     imageUrl,
+    createdBy,
   };
 
   const result = await BusinessList.create(businessData);

@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 
 export type TBusinessList = {
   businessName: string;
@@ -8,6 +9,7 @@ export type TBusinessList = {
   website?: string;
   location: string;
   imageUrl: string;
+  createdBy : ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
 };
