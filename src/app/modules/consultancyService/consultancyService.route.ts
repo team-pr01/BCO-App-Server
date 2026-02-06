@@ -2,7 +2,6 @@ import express from "express";
 import auth from "../../middlewares/auth";
 import { UserRole } from "../auth/auth.constannts";
 import { ConsultancyServiceControllers } from "./consultancyService.controller";
-import authorizeRoute from "../../middlewares/authorizeRoute";
 import { multerUpload } from "../../config/multer.config";
 
 const router = express.Router();
@@ -11,8 +10,7 @@ const router = express.Router();
 router.post(
   "/add-consultancy-service",
   multerUpload.single("file"),
-  auth(UserRole.admin, UserRole.moderator, UserRole["super-admin"]),
-  authorizeRoute(),
+  auth(UserRole.admin),
   ConsultancyServiceControllers.addConsultancyService
 );
 
@@ -22,11 +20,10 @@ router.get("/:consultancyServiceId", ConsultancyServiceControllers.getSingleCons
 router.put(
   "/:consultancyServiceId",
   multerUpload.single("file"),
-  auth(UserRole.admin, UserRole.moderator, UserRole["super-admin"]),
-  authorizeRoute(),
+  auth(UserRole.admin),
   ConsultancyServiceControllers.updateConsultancyService
 );
 
-router.delete("/:consultancyServiceId", auth(UserRole.admin, UserRole.moderator, UserRole["super-admin"]), authorizeRoute(), ConsultancyServiceControllers.deleteConsultancyService);
+router.delete("/:consultancyServiceId", auth(UserRole.admin), ConsultancyServiceControllers.deleteConsultancyService);
 
 export const ConsultancyServiceRoutes = router;

@@ -7,6 +7,7 @@ import { NewsRoutes } from "../modules/news/news.route";
 import { ConsultancyServiceRoutes } from "../modules/consultancyService/consultancyService.route";
 import { ReelsRoutes } from "../modules/reels/reels.route";
 import { ContactUsRoutes } from "../modules/contactUs/contactUs.route";
+import { ConsultationRoutes } from "../modules/consultations/consultations.route";
 
 const router = Router();
 
@@ -34,6 +35,10 @@ const moduleRoutes = [
   {
     path: "/consultancy-service",
     route: ConsultancyServiceRoutes,
+  },
+  {
+    path: "/consultation",
+    route: ConsultationRoutes,
   },
   {
     path: "/reels",

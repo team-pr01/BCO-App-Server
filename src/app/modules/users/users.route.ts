@@ -12,10 +12,7 @@ router.get(
   "/me",
   auth(
     UserRole.user,
-    UserRole.temple,
     UserRole.admin,
-    UserRole.moderator,
-    UserRole["super-admin"]
   ),
   UserControllers.getMe
 );
