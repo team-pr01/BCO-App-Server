@@ -3,6 +3,10 @@ import { TContactUs } from "./contactUs.interface";
 
 const ContactUsSchema = new Schema<TContactUs>(
   {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     name: {
       type: String,
       required: true,
